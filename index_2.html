@@ -1,0 +1,430 @@
+<title>Vibe Coding Setup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF9F5;
+    --paper:#FFFFFF;
+    --ink:#1B2430;
+    --ink-soft:#5B6472;
+    --ink-faint:#8A93A0;
+    --accent:#2D7D6E;
+    --accent-ink:#1F5B50;
+    --accent-soft:#E3F1ED;
+    --border:#E4E1D7;
+    --code-bg:#12161B;
+    --code-ink:#D9E4E0;
+    --warn-bg:#FCEFE3;
+    --warn-border:#EAC9A0;
+    --warn-ink:#7A4A16;
+    --shadow: 0 1px 2px rgba(27,36,48,0.04), 0 8px 24px rgba(27,36,48,0.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#14181D; --paper:#1B2027; --ink:#ECEEF1; --ink-soft:#AAB2BC; --ink-faint:#727C87;
+      --accent:#57C2AC; --accent-ink:#8AD8C6; --accent-soft:rgba(87,194,172,0.14);
+      --border:#2B313A; --code-bg:#0B0E11; --code-ink:#D9E4E0;
+      --warn-bg:rgba(234,201,160,0.1); --warn-border:#5A4426; --warn-ink:#E8C48F;
+      --shadow: 0 1px 2px rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.55;padding-inline:20px;}
+  .wrap{max-width:720px;margin:0 auto;padding-block:20px 60px;}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:600;letter-spacing:-0.01em;color:var(--ink);}
+  a{color:var(--accent-ink);}
+  code, .mono{font-family:'JetBrains Mono',ui-monospace,monospace;}
+  [hidden]{display:none!important;}
+
+  .navbar{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:14px;padding-bottom:12px;margin-bottom:10px;}
+  .navtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+  .navtop .eyebrow{font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--accent-ink);}
+  .navtop .count{font-size:12.5px;color:var(--ink-faint);font-family:'JetBrains Mono';}
+  .progressbar{height:5px;border-radius:100px;background:var(--border);overflow:hidden;margin-bottom:10px;}
+  .progressbar > i{display:block;height:100%;background:var(--accent);border-radius:100px;transition:width .3s ease;}
+  .dots{display:flex;gap:6px;flex-wrap:wrap;}
+  .dot{flex:1;min-width:28px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-size:12px;font-weight:600;color:var(--ink-faint);cursor:pointer;transition:.15s;}
+  .dot:hover{border-color:var(--accent);}
+  .dot.active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink);}
+  .dot.done{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .dot.summary-dot{flex:1.6;font-size:11px;letter-spacing:.02em;text-transform:uppercase;}
+
+  .panel{background:var(--paper);border:1px solid var(--border);border-radius:16px;padding:26px 26px 24px;box-shadow:var(--shadow);}
+
+  .eyebrow-badge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent-soft);padding:5px 12px;border-radius:100px;}
+  h1.title{font-size:clamp(28px,5vw,38px);margin:16px 0 6px;}
+  .subtitle{color:var(--ink-soft);font-size:16px;margin:0 0 18px;}
+  .panel p{margin:0 0 12px;font-size:15.5px;}
+  .panel p:last-child{margin-bottom:0;}
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--border);font-size:13.5px;color:var(--ink-soft);}
+  .meta-row b{color:var(--ink);}
+
+  .step-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:6px;}
+  .num{flex:none;width:34px;height:34px;border-radius:9px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-size:14px;font-weight:600;}
+  .panel.optional .num{background:var(--ink-faint);}
+  .step-head h2{font-size:21px;margin:4px 0 0;}
+  .step-tag{display:inline-block;margin-left:10px;font-size:11.5px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-faint);vertical-align:middle;}
+  ol.steps{margin:14px 0 0;padding-left:22px;}
+  ol.steps > li{margin-bottom:10px;padding-left:2px;}
+  ol.steps ul{margin:6px 0 0;padding-left:20px;}
+  ol.steps ul li{margin-bottom:4px;font-size:14.5px;color:var(--ink-soft);}
+  code.inline{background:var(--accent-soft);color:var(--accent-ink);padding:1.5px 7px;border-radius:5px;font-size:0.92em;}
+  pre{background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:13px 16px;overflow-x:auto;margin:12px 0;font-size:14px;}
+  pre code{font-family:'JetBrains Mono';background:none;padding:0;color:inherit;}
+  .why{margin-top:16px;padding:12px 14px;border-radius:10px;background:var(--accent-soft);font-size:14px;color:var(--ink);}
+  .why b{color:var(--accent-ink);}
+  .resources{margin-top:14px;font-size:13.5px;color:var(--ink-soft);}
+  .resources a{font-weight:500;}
+  .note{margin-top:14px;padding:11px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--border);font-size:13.5px;color:var(--ink-soft);}
+
+  .actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
+  .btn{appearance:none;border:none;cursor:pointer;font-family:'Inter';font-size:14.5px;font-weight:600;padding:11px 18px;border-radius:10px;transition:.15s;}
+  .btn.primary{background:var(--accent);color:#fff;}
+  .btn.primary:hover{background:var(--accent-ink);}
+  .btn.secondary{background:transparent;color:var(--ink-soft);border:1px solid var(--border);}
+  .btn.secondary:hover{border-color:var(--ink-faint);color:var(--ink);}
+  .btn.ghost{background:none;color:var(--ink-faint);font-weight:500;padding:11px 4px;text-decoration:underline;text-underline-offset:2px;}
+  .btn.ghost:hover{color:var(--ink-soft);}
+  .actions-right{display:flex;gap:10px;align-items:center;}
+
+  .summary-list{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .summary-list li{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:10px;border:1px solid var(--border);font-size:14.5px;}
+  .summary-list li.on{background:var(--accent-soft);border-color:var(--accent);}
+  .summary-list li .mark{flex:none;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:var(--border);color:var(--ink-faint);}
+  .summary-list li.on .mark{background:var(--accent);color:#fff;}
+  .summary-list li .name{flex:1;}
+  .summary-list li .status{font-size:12px;color:var(--ink-faint);font-weight:500;}
+  .celebrate{font-size:38px;line-height:1;margin-bottom:4px;}
+
+  .trouble{background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:14px;padding:18px 20px;margin-top:16px;}
+  .trouble h3{font-size:16px;color:var(--warn-ink);margin:0 0 8px;}
+  .trouble ol{margin:0;padding-left:20px;color:var(--ink);font-size:14px;}
+  .trouble li{margin-bottom:5px;}
+
+  footer{margin-top:24px;text-align:center;color:var(--ink-faint);font-size:13.5px;}
+
+  @media (max-width:520px){
+    .panel{padding:20px 18px;}
+    .dot.summary-dot{display:none;}
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="navbar">
+    <div class="navtop">
+      <span class="eyebrow">Vibe Coding · Session 2 setup</span>
+      <span class="count" id="navcount">0 / 7 done</span>
+    </div>
+    <div class="progressbar"><i id="progressfill" style="width:0%"></i></div>
+    <div class="dots" id="dots">
+      <div class="dot" data-jump="0" title="Node.js">1</div>
+      <div class="dot" data-jump="1" title="Parley key">2</div>
+      <div class="dot" data-jump="2" title="Google Drive">3</div>
+      <div class="dot" data-jump="3" title="Project folders">4</div>
+      <div class="dot" data-jump="4" title="Granola (optional)">5</div>
+      <div class="dot" data-jump="5" title="GitHub">6</div>
+      <div class="dot" data-jump="6" title="Vercel">7</div>
+      <div class="dot summary-dot" data-jump="8" title="Summary">Summary</div>
+    </div>
+  </div>
+
+  <!-- COVER -->
+  <section class="panel" data-panel="cover">
+    <span class="eyebrow-badge">Session 2 · Monday, 9/21</span>
+    <h1 class="title">Hey everyone! 👋</h1>
+    <p class="subtitle">How's it going? Ready for tomorrow's second Vibe Coding session?</p>
+    <p>Ahead of class, we'd love for you to set up a few accounts and tools — walk through the steps below one at a time, at your own pace. Let's get your setup ready so we can jump straight into building instead of spending class time on installs.</p>
+    <p>If anything doesn't work, no stress: just arrive <strong>15–20 minutes early</strong> tomorrow and we'll troubleshoot it together before class starts.</p>
+    <p><strong>Step 5 (Granola) is optional but encouraged</strong> — everything else, please complete before class.</p>
+    <div class="meta-row">
+      <span><b>Session 2</b> — Monday, 9/21</span>
+      <span><b>Setup time</b> — ~15–20 min</span>
+      <span>Your progress is saved automatically on this device</span>
+    </div>
+    <div class="actions">
+      <span></span>
+      <div class="actions-right"><button class="btn primary" data-next>Let's get started →</button></div>
+    </div>
+  </section>
+
+  <!-- 1. Node -->
+  <section class="panel" data-panel="0">
+    <div class="step-head"><div class="num">1</div><h2>Install Node.js v24 LTS</h2></div>
+    <ol class="steps">
+      <li>Go to <a href="https://nodejs.org/" target="_blank" rel="noopener">nodejs.org</a>.</li>
+      <li>Click <b>Get Node.js</b>.</li>
+      <li>At the top of the download page, confirm the version is set to <code class="inline">v24.21.0 LTS</code>.
+        <ul><li>Select the version labeled <b>LTS</b>.</li><li>Do not select <code class="inline">v26.8.2</code>, labeled <b>Current</b>.</li></ul>
+      </li>
+      <li>Select your computer's operating system:
+        <ul><li>Choose <b>macOS</b> if you have a Mac.</li><li>Choose <b>Windows</b> if you have a Windows computer.</li></ul>
+      </li>
+      <li>Do not select or follow the Docker instructions.</li>
+      <li>Scroll down to the section beginning "Or get a prebuilt Node.js…"</li>
+      <li>Select the appropriate installer:
+        <ul>
+          <li><b>Mac:</b> download the Installer (<code class="inline">.pkg</code>).</li>
+          <li><b>Windows:</b> download the Installer (<code class="inline">.msi</code>).</li>
+          <li>If asked for your computer's architecture, use the option it recommends automatically — most recent Macs use ARM64, most Windows laptops use x64.</li>
+        </ul>
+      </li>
+      <li>Open the downloaded installer.</li>
+      <li>Complete the installation using the default options.</li>
+      <li>After installation finishes, open a terminal:
+        <ul><li><b>Mac:</b> open the Terminal application.</li><li><b>Windows:</b> open Windows Terminal or Command Prompt.</li></ul>
+      </li>
+      <li>Type the following command and press Enter:<pre><code>node -v</code></pre></li>
+      <li>You should see a version number — probably <code class="inline">v24.21.0</code> if you followed the steps above.</li>
+    </ol>
+    <div class="note">
+      If you see a different version starting with <code class="inline">v20</code> or higher (e.g. <code class="inline">v22</code>, <code class="inline">v25</code>, <code class="inline">v26</code>), Node is already installed — no need to reinstall just for this class. If you see something below <code class="inline">v20</code>, or "command not found," close and reopen the terminal and try again. If it still doesn't work, tap <b>Summary</b> above for troubleshooting steps.
+      <br><br>
+      <b>Claude Code can help:</b> if you already have it installed, try asking: <em>"Help me install Node.js v24.21.0 LTS using the official prebuilt installer. Do not use Docker. Then help me verify the installation using <code class="inline">node -v</code>."</em>
+    </div>
+    <div class="why"><b>Why:</b> Node.js is the software that lets you do more interesting things with your website and the other tools you'll build.</div>
+    <div class="actions">
+      <button class="btn secondary" data-back>← Back</button>
+      <div class="actions-right"><button class="btn primary" data-done="node" data-next>Mark complete & continue →</button></div>
+    </div>
+  </section>
+
+  <!-- 2. Parley -->
+  <section class="panel" data-panel="1">
+    <div class="step-head"><div class="num">2</div><h2>Create a Parley API key</h2></div>
+    <ol class="steps">
+      <li>Go to <a href="https://platform.parley.mit.edu/" target="_blank" rel="noopener">platform.parley.mit.edu</a>.</li>
+      <li>Sign in using your MIT account.</li>
+      <li>Click <b>+ New key</b>.</li>
+      <li>When asked who the key is for, select <b>For me</b> (not "Kerberos" or "Moira list").</li>
+      <li>Under <b>Key label</b>, enter: <code class="inline">personal-site</code></li>
+      <li>Leave <b>Key expiry</b> at its default setting.</li>
+      <li>Under <b>API Key Budget Limits</b>, enter:
+        <ul><li>Monthly budget cap: <code class="inline">$5</code></li><li>Alert threshold: <code class="inline">50%</code></li></ul>
+      </li>
+      <li>Double-check the form shows: For me · Key label <code class="inline">personal-site</code> · budget cap <code class="inline">$5</code> · alert <code class="inline">50%</code>.</li>
+      <li>Click <b>Issue key</b>.</li>
+      <li>Copy the entire API key immediately.</li>
+      <li>Save it somewhere private and easy to find on Monday — e.g. a private note on your laptop.</li>
+    </ol>
+    <div class="note">
+      <b>Important:</b> treat your API key like a password. Don't email it, put it in a shared document, paste it into your website's code, or upload it to GitHub. We'll set it up securely in class.
+      <br><br>
+      The $5 is a spending <i>limit</i>, not a target — MIT gives each student $30/month in Parley credits, and Monday's build will use only a small slice of that.
+    </div>
+    <div class="why"><b>Why:</b> the Parley API lets the tools you build use AI in the background, even when your laptop is shut down. Your key gives them permission to do that using your account and credits. More on this Monday.</div>
+    <div class="actions">
+      <button class="btn secondary" data-back>← Back</button>
+      <div class="actions-right"><button class="btn primary" data-done="parley" data-next>Mark complete & continue →</button></div>
+    </div>
+  </section>
+
+  <!-- 3. Drive -->
+  <section class="panel" data-panel="2">
+    <div class="step-head"><div class="num">3</div><h2>Connect Google Drive to Claude</h2></div>
+    <ol class="steps">
+      <li>Go to <a href="https://claude.ai/customize/connectors" target="_blank" rel="noopener">claude.ai/customize/connectors</a>.</li>
+      <li>Confirm you're signed in with your MIT Claude account.</li>
+      <li>Find <b>Google Drive</b> in the list of connectors.</li>
+      <li>Click <b>Connect</b>.</li>
+      <li>When Google asks you to select an account, choose your <b>personal Google account</b> (MIT accounts don't run on Google — use whichever Gmail/Google account you use day to day).</li>
+      <li>Follow the prompts to authorize the connection.</li>
+      <li>Return to Claude's connector settings and confirm Google Drive shows as connected.</li>
+    </ol>
+    <div class="why"><b>Why:</b> the shared folder will contain new material for your digital MBA advisor.</div>
+    <div class="actions">
+      <button class="btn secondary" data-back>← Back</button>
+      <div class="actions-right"><button class="btn primary" data-done="drive" data-next>Mark complete & continue →</button></div>
+    </div>
+  </section>
+
+  <!-- 4. Folders -->
+  <section class="panel" data-panel="3">
+    <div class="step-head"><div class="num">4</div><h2>Bring both project folders</h2></div>
+    <p style="margin:2px 0 8px;color:var(--ink-soft);font-size:14.5px;">On the laptop you'll bring to class:</p>
+    <ol class="steps">
+      <li>Locate the two folders you created last week: <code class="inline">personal-site</code> and <code class="inline">mba-advisor</code>.</li>
+      <li>Open each folder and confirm the files are still there.</li>
+      <li>Make sure both folders are stored <b>locally</b> on the laptop you'll use tomorrow.</li>
+    </ol>
+    <div class="note">Don't leave the folders only on a different computer or in a cloud account you can't reach during class.</div>
+    <div class="actions">
+      <button class="btn secondary" data-back>← Back</button>
+      <div class="actions-right"><button class="btn primary" data-done="folders" data-next>Mark complete & continue →</button></div>
+    </div>
+  </section>
+
+  <!-- 5. Granola (optional) -->
+  <section class="panel optional" data-panel="4">
+    <div class="step-head"><div class="num">5</div><h2>Connect Granola<span class="step-tag">Optional</span></h2></div>
+    <p>If you already use Granola to take meeting notes, you can connect it to Claude too — this lets your digital MBA advisor read and use those notes.</p>
+    <p>You don't need to create a Granola account if you don't already use it — just skip ahead.</p>
+    <div class="actions">
+      <button class="btn secondary" data-back>← Back</button>
+      <div class="actions-right">
+        <button class="btn ghost" data-next>Skip, I don't use it →</button>
+        <button class="btn primary" data-done="granola" data-next>I use it — mark done & continue →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. GitHub -->
+  <section class="panel" data-panel="5">
+    <div class="step-head"><div class="num">6</div><h2>Create a GitHub account</h2></div>
+    <ol class="steps">
+      <li>Go to <a href="https://github.com/" target="_blank" rel="noopener">github.com</a>.</li>
+      <li>Click <b>Sign up</b> in the top right.</li>
+      <li>Enter your email, create a password, and choose a username.
+        <ul><li>Tip: pick something simple and professional — this may become a public profile you share later, e.g. in a portfolio.</li></ul>
+      </li>
+      <li>Verify your email using the confirmation code GitHub sends you.</li>
+      <li>Answer (or skip) the short personalization questions.</li>
+      <li>You should land on your GitHub dashboard — that's it for now. We'll create your first repository together in class.</li>
+    </ol>
+    <div class="note">Already have a GitHub account? No need to make a new one — just make sure you remember the username and password.</div>
+    <div class="why"><b>Why:</b> GitHub is where your code will live online, and where Vercel (next step) pulls from to publish your website.</div>
+    <div class="resources">Want a head start? GitHub's own <a href="https://docs.github.com/en/get-started" target="_blank" rel="noopener">Get started with GitHub</a> docs and <a href="https://github.blog/developer-skills/github/beginners-guide-to-github-repositories-how-to-create-your-first-repo/" target="_blank" rel="noopener">Beginner's guide to GitHub repositories</a> are both short, official, and beginner-friendly — not required, just there if you're curious before class.</div>
+    <div class="actions">
+      <button class="btn secondary" data-back>← Back</button>
+      <div class="actions-right"><button class="btn primary" data-done="github" data-next>Mark complete & continue →</button></div>
+    </div>
+  </section>
+
+  <!-- 7. Vercel -->
+  <section class="panel" data-panel="6">
+    <div class="step-head"><div class="num">7</div><h2>Create a Vercel account</h2></div>
+    <ol class="steps">
+      <li>Go to <a href="https://vercel.com/" target="_blank" rel="noopener">vercel.com</a>.</li>
+      <li>Click <b>Sign Up</b>.</li>
+      <li>Choose <b>Continue with GitHub</b>, using the same account you just created in Step 6, and authorize Vercel to access it.
+        <ul><li>Signing up with GitHub keeps things simple — Vercel publishes directly from your GitHub repositories.</li></ul>
+      </li>
+      <li>Complete (or skip) the short onboarding questions.</li>
+      <li>You should land on your Vercel dashboard with no projects yet — that's expected. We'll create and deploy your first project together in class.</li>
+    </ol>
+    <div class="why"><b>Why:</b> Vercel takes the code you write and puts it live on the internet as a real website, with its own link you can share.</div>
+    <div class="resources">Official reference: <a href="https://vercel.com/docs/getting-started-with-vercel" target="_blank" rel="noopener">Getting started with Vercel</a>.</div>
+    <div class="actions">
+      <button class="btn secondary" data-back>← Back</button>
+      <div class="actions-right"><button class="btn primary" data-done="vercel" data-next>Finish →</button></div>
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="panel" data-panel="8">
+    <div class="celebrate">✅</div>
+    <h1 class="title" style="font-size:26px;margin-top:0;">You're all set for tomorrow</h1>
+    <p class="subtitle" style="margin-bottom:14px;">Here's what you've completed. Click any item to jump back and finish it.</p>
+    <ul class="summary-list" id="summaryList"></ul>
+    <div class="trouble">
+      <h3>If something didn't work</h3>
+      <ol>
+        <li>Take a screenshot that includes the full error message or problem.</li>
+        <li>Reply to our message and attach the screenshot.</li>
+        <li>Bring the laptop where the problem happened.</li>
+        <li>Arrive 15–20 minutes early tomorrow so we can troubleshoot before class.</li>
+      </ol>
+    </div>
+    <div class="actions">
+      <button class="btn secondary" data-back>← Back</button>
+      <div class="actions-right"><button class="btn ghost" id="resetBtn">Start over</button></div>
+    </div>
+  </section>
+
+  <footer>Questions? Just reach out — see you tomorrow!</footer>
+</div>
+
+<script>
+(function(){
+  var KEY = 'vibe-setup-progress-v2';
+  var order = ['cover','0','1','2','3','4','5','6','8'];
+  var doneKeys = ['node','parley','drive','folders','granola','github','vercel'];
+  var labels = {node:'Node.js v24 LTS',parley:'Parley API key',drive:'Google Drive → Claude',folders:'Project folders',granola:'Granola (optional)',github:'GitHub account',vercel:'Vercel account'};
+
+  var state = {done:{}, idx:0};
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (saved && typeof saved === 'object') state = saved;
+  } catch(e) {}
+
+  var panels = {};
+  document.querySelectorAll('[data-panel]').forEach(function(p){ panels[p.getAttribute('data-panel')] = p; });
+  var dots = {};
+  document.querySelectorAll('.dot').forEach(function(d){ dots[d.getAttribute('data-jump')] = d; });
+
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+
+  function render(){
+    order.forEach(function(key, i){
+      panels[key].hidden = (i !== state.idx);
+    });
+    var doneCount = doneKeys.filter(function(k){ return state.done[k]; }).length;
+    document.getElementById('navcount').textContent = doneCount + ' / 7 done';
+    document.getElementById('progressfill').style.width = Math.round((doneCount/7)*100) + '%';
+
+    doneKeys.forEach(function(k, i){
+      var dot = dots[String(i)];
+      if (!dot) return;
+      dot.classList.toggle('done', !!state.done[k]);
+    });
+    order.forEach(function(key,i){
+      var dot = dots[key === '8' ? '8' : key];
+      if (dot) dot.classList.toggle('active', i === state.idx);
+    });
+
+    if (order[state.idx] === '8') renderSummary();
+  }
+
+  function renderSummary(){
+    var list = document.getElementById('summaryList');
+    list.innerHTML = '';
+    doneKeys.forEach(function(k, i){
+      var on = !!state.done[k];
+      var li = document.createElement('li');
+      li.className = on ? 'on' : '';
+      li.style.cursor = 'pointer';
+      li.innerHTML = '<span class="mark">' + (on ? '✓' : (i+1)) + '</span>' +
+                     '<span class="name">' + labels[k] + '</span>' +
+                     '<span class="status">' + (on ? 'Done' : (k==='granola' ? 'Skipped' : 'Not done — tap to finish')) + '</span>';
+      li.addEventListener('click', function(){ state.idx = i + 1; save(); render(); window.scrollTo({top:0, behavior:'smooth'}); });
+      list.appendChild(li);
+    });
+  }
+
+  document.querySelectorAll('[data-next]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var doneKey = btn.getAttribute('data-done');
+      if (doneKey) state.done[doneKey] = true;
+      state.idx = Math.min(state.idx + 1, order.length - 1);
+      save(); render();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+  document.querySelectorAll('[data-back]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      state.idx = Math.max(state.idx - 1, 0);
+      save(); render();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+  document.querySelectorAll('.dot').forEach(function(dot){
+    dot.addEventListener('click', function(){
+      var jump = dot.getAttribute('data-jump');
+      var i = order.indexOf(jump === '8' ? '8' : jump);
+      if (i === -1) return;
+      state.idx = i; save(); render();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    state = {done:{}, idx:0};
+    save(); render();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  render();
+})();
+</script>
